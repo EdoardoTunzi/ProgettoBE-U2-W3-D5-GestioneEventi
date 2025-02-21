@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,9 +31,12 @@ public class Utente {
     @Column(nullable = false, unique = true)
     private String email;
 
-    /*@ManyToMany()
-    @JoinTable( name="utente_ruolo",
-            joinColumns = @JoinColumn(name="utente_id"),
-            inverseJoinColumns =  @JoinColumn(name="ruolo_id"))
-    private Set<Ruolo> ruolo = new HashSet<>();*/
+    @OneToMany
+    private List<Evento> listaEventi; //in caso user è null
+
+    @OneToMany
+    private List<Prenotazione> listaPrenotazioni; //same
+
+    @ManyToOne
+    private Ruolo ruolo;
 }
