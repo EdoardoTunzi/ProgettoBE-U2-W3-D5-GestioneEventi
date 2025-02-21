@@ -30,9 +30,9 @@ public class Utente {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @ManyToMany()
+    /*@ManyToMany()
     @JoinTable( name="utente_ruolo",
             joinColumns = @JoinColumn(name="utente_id"),
             inverseJoinColumns =  @JoinColumn(name="ruolo_id"))
-    private Set<Ruolo> ruolo = new HashSet<>();
+    private Set<Ruolo> ruolo = new HashSet<>();*/
 }
