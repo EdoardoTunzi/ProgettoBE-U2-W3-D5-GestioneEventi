@@ -4,6 +4,7 @@ package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.controller;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.EmailDuplicateException;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.UsernameDuplicateException;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.UtenteDTO;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.request.RegistrazioneRequest;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class UtenteController {
 
     //creazione/registrazione nuovo utente
     @PostMapping("/new")
-    public ResponseEntity<String> inserisciUtente(@Validated @RequestBody UtenteDTO nuovoUtente, BindingResult validazione){
+    public ResponseEntity<String> inserisciUtente(@Validated @RequestBody RegistrazioneRequest nuovoUtente, BindingResult validazione){
 
         try {
             if(validazione.hasErrors()){

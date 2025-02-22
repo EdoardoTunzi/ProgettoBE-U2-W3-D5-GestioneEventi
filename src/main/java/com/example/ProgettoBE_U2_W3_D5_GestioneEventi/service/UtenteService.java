@@ -2,8 +2,11 @@ package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service;
 
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.EmailDuplicateException;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.UsernameDuplicateException;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Eruolo;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Ruolo;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Utente;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.UtenteDTO;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.request.RegistrazioneRequest;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.repository.UtenteDAORepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UtenteService {
+
     @Autowired
     UtenteDAORepository utenteRepo;
 
     // registrazione nuovo utente
-    public String inserisciUtente(UtenteDTO utenteDTO) throws UsernameDuplicateException, EmailDuplicateException {
+    public String inserisciUtente(RegistrazioneRequest utenteDTO) throws UsernameDuplicateException, EmailDuplicateException {
         checkDuplicateKey(utenteDTO.getUsername(), utenteDTO.getEmail());
-        Utente user = dto_entity(utenteDTO);
+        Utente user = registrazioneRequest_Utente(utenteDTO);
         Long id = utenteRepo.save(user).getId();
         return "Nuovo utente " + user.getUsername() + "con id " + id + " è stato inserito correttamente";
     }
@@ -34,7 +38,6 @@ public class UtenteService {
             throw new EmailDuplicateException("Email già utilizzata da un altro utente ");
         }
     }
-
 
     //metodi travaso
 
@@ -57,5 +60,23 @@ public class UtenteService {
         dto.setCognome(utente.getCognome());
         return dto;
 
+    }
+
+    //travaso da RegistrazioneRequest a entity Utente
+
+    public Utente registrazioneRequest_Utente (RegistrazioneRequest request) {
+        Utente utente = new Utente();
+        utente.setEmail(request.getEmail());
+        utente.setNome(request.getNome());
+        utente.setUsername(request.getUsername());
+        utente.setCognome(request.getCognome());
+        utente.setPassword(request.getPassword());
+
+        /*if (request.getRuolo() == null) {
+            utente.setRuolo();
+        } else {
+            utente.setRuolo(request.getRuolo().getNome());
+        }*/
+        return utente;
     }
 }
