@@ -28,7 +28,7 @@ public class UtenteService {
     @Autowired
     private RuoloRepository ruoloRepository;
 
-    // registrazione nuovo utente
+    // registro un nuovo utente controllando prima se username/email sono disponibili
     public String inserisciUtente(RegistrazioneRequest registrazione) throws UsernameDuplicateException, EmailDuplicateException {
         checkDuplicateKey(registrazione.getUsername(), registrazione.getEmail());
         Utente user = registrazioneRequest_Utente(registrazione);
@@ -36,8 +36,7 @@ public class UtenteService {
         return "Nuovo utente " + user.getUsername() + "con id " + id + " è stato inserito correttamente";
     }
 
-    //metodo per controllo duplicateKey
-
+    // controllo che username ed email non siano già presenti nel database
     public void checkDuplicateKey(String username, String email) throws UsernameDuplicateException, EmailDuplicateException {
         if (utenteRepo.existsByUsername(username)) {
             throw new UsernameDuplicateException("Username già utilizzato, non disponibile");
@@ -48,7 +47,7 @@ public class UtenteService {
         }
     }
 
-    //metodi travaso
+    //metodi travaso UtenteDTO
 
     public Utente dto_entity(UtenteDTO dto) {
         Utente utente = new Utente();
@@ -71,7 +70,7 @@ public class UtenteService {
 
     }
 
-    //travaso da RegistrazioneRequest a entity Utente -FINISCI CONTROLLO RUOLI!!!!!!
+    //travaso da RegistrazioneRequest a entity Utente, gestisco anche l'assegnazione dei ruoli, codifica password
 
     public Utente registrazioneRequest_Utente (RegistrazioneRequest request) {
         Utente utente = new Utente();
@@ -95,7 +94,6 @@ public class UtenteService {
         } else {
             throw new RuntimeException("Errore: Il Valore inserito come ruolo non è valido!");
         }
-
         return utente;
     }
 }

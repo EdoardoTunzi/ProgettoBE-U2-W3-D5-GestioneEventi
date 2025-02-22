@@ -1,15 +1,13 @@
 package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.controller;
 
-
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.UtenteService;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.EmailDuplicateException;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.UsernameDuplicateException;
-import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.UtenteDTO;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.request.LoginRequest;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.request.RegistrazioneRequest;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.response.JwtResponse;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.jwt.JwtUtils;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.services.UserDetailsImpl;
-import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
