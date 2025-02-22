@@ -2,8 +2,6 @@ package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service;
 
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.EmailDuplicateException;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.UsernameDuplicateException;
-import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Eruolo;
-import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Ruolo;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Utente;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.UtenteDTO;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.request.RegistrazioneRequest;
