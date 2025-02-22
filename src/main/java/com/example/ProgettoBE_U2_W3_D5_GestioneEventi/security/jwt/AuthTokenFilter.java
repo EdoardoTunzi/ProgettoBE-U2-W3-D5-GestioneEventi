@@ -34,23 +34,26 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwt = analizzaJwt(request);
+        try {
+            String jwt = analizzaJwt(request);
 
-        if (jwt != null && utils.validazioneJwtToken(jwt)) {
+            if (jwt != null && utils.validazioneJwtToken(jwt)) {
+                String username = utils.recuperoUsernameDaToken(jwt);
+                UserDetails dettagliUtente = userDetailsService.loadUserByUsername(username);
 
-            String username = utils.recuperoUsernameDaToken(jwt);
+                UsernamePasswordAuthenticationToken autenticazione =
+                        new UsernamePasswordAuthenticationToken(
+                                dettagliUtente,
+                                null,
+                                dettagliUtente.getAuthorities());
 
-            UserDetails dettagliUtente = userDetailsService.loadUserByUsername(username);
-
-            UsernamePasswordAuthenticationToken autenticazione =
-                    new UsernamePasswordAuthenticationToken(
-                            dettagliUtente,
-                            null,
-                            dettagliUtente.getAuthorities());
-
-            autenticazione.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(autenticazione);
+                autenticazione.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(autenticazione);
+            }
+        } catch (Exception e) {
+            System.out.println("Errore durante l'autenticazione dell'utente: {}"+ e.getMessage());
         }
+
+        filterChain.doFilter(request, response); // Continua la catena di filtri
     }
 }

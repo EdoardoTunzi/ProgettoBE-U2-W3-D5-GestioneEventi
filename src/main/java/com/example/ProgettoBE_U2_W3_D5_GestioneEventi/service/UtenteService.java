@@ -10,9 +10,9 @@ import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.request.Registrazi
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.repository.RuoloRepository;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.repository.UtenteDAORepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 
 @Service
@@ -21,6 +21,9 @@ public class UtenteService {
 
     @Autowired
     UtenteDAORepository utenteRepo;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;//mancava
 
     @Autowired
     private RuoloRepository ruoloRepository;
@@ -72,11 +75,13 @@ public class UtenteService {
 
     public Utente registrazioneRequest_Utente (RegistrazioneRequest request) {
         Utente utente = new Utente();
+        String passwordCodificata = passwordEncoder.encode(request.getPassword());//mancava
+
         utente.setEmail(request.getEmail());
         utente.setNome(request.getNome());
         utente.setUsername(request.getUsername());
         utente.setCognome(request.getCognome());
-        utente.setPassword(request.getPassword());
+        utente.setPassword(passwordCodificata);
 
         if (request.getRuolo() == null) {
             Ruolo defaultRole = ruoloRepository.findByNome(Eruolo.ROLE_USER).orElseThrow(() -> new RuntimeException("Errore: Ruolo non trovato."));
@@ -94,3 +99,5 @@ public class UtenteService {
         return utente;
     }
 }
+
+

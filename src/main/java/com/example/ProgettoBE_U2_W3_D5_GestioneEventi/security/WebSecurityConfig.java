@@ -1,7 +1,9 @@
 package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security;
 
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.jwt.AuthEntryPoint;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.jwt.AuthTokenFilter;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.services.UserDetailsServiceImpl;
+import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -41,7 +44,7 @@ public class WebSecurityConfig{
 
         return auth;
     }
-
+//mancava
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -58,8 +61,13 @@ public class WebSecurityConfig{
                         .requestMatchers("/eventi/**").hasAuthority("ROLE_ORGANIZZATORE") // Solo organizzatori possono gestire eventi
                         .requestMatchers("/prenotazioni/**").hasAuthority("ROLE_USER")// Solo utenti possono prenotare
                         .anyRequest().authenticated());
-
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);//mancava
         http.authenticationProvider(authenticationProvider());
         return http.build();
+    }
+//mancava
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
     }
 }

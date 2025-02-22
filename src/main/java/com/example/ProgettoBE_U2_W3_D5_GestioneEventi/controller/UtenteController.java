@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -78,31 +79,35 @@ public class UtenteController {
 
         }
 
-        //Generiamo un oggetto che occorre per l'autenticazione
-        UsernamePasswordAuthenticationToken tokenNoAuth = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+        try {
+            //Generiamo un oggetto che occorre per l'autenticazione
+            UsernamePasswordAuthenticationToken tokenNoAuth = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
 
-        // Invocare e a recuperare l'authentication -> autenticazione va a buon fine
-        // Utilizziamo il gestore delle autenticazioni che si basa su Useername e Password
-        // Recuperiamo l'autenticazione attraverso il metodo authenticate
-        Authentication autenticazione = managerAuth.authenticate(tokenNoAuth);
+            // Invocare e a recuperare l'authentication -> autenticazione va a buon fine
+            // Utilizziamo il gestore delle autenticazioni che si basa su Useername e Password
+            // Recuperiamo l'autenticazione attraverso il metodo authenticate
+            Authentication autenticazione = managerAuth.authenticate(tokenNoAuth);
 
-        // Impostare l'autenticazione nel contesto di sicurezza Spring
-        SecurityContextHolder.getContext().setAuthentication(autenticazione);
+            // Impostare l'autenticazione nel contesto di sicurezza Spring
+            SecurityContextHolder.getContext().setAuthentication(autenticazione);
 
-        // Generiamo il TOKEN FINALE (String)
-        String token = utilitiesJwt.creaJwtToken(autenticazione);
+            // Generiamo il TOKEN FINALE (String)
+            String token = utilitiesJwt.creaJwtToken(autenticazione);
 
-        // Recuperando le info che vogliamo inserire nella risposta al client
-        UserDetailsImpl dettagliUtente = (UserDetailsImpl) autenticazione.getPrincipal();
-        List<String> ruoliweb = dettagliUtente.getAuthorities().stream()
-                .map((item->item.getAuthority()))
-                .collect(Collectors.toList());
+            // Recuperando le info che vogliamo inserire nella risposta al client
+            UserDetailsImpl dettagliUtente = (UserDetailsImpl) autenticazione.getPrincipal();
+            List<String> ruoliweb = dettagliUtente.getAuthorities().stream()
+                    .map((item->item.getAuthority()))
+                    .collect(Collectors.toList());
 
-        // Creare un oggetto JWTresponse
-        JwtResponse responseJWT = new JwtResponse(dettagliUtente.getUsername(), dettagliUtente.getId(),dettagliUtente.getEmail() , ruoliweb, token);
+            // Creare un oggetto JWTresponse
+            JwtResponse responseJWT = new JwtResponse(dettagliUtente.getUsername(), dettagliUtente.getId(),dettagliUtente.getEmail() , ruoliweb, token);
 
-        // Gestione della risposta al Client -> ResponseEntity
-        return new ResponseEntity<>(responseJWT, HttpStatus.OK);
+            // Gestione della risposta al Client -> ResponseEntity
+            return new ResponseEntity<>(responseJWT, HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>("Credenziali non valide", HttpStatus.UNAUTHORIZED);
+        }
 
     }
 }
