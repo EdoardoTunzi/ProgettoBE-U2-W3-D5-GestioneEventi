@@ -40,4 +40,12 @@ public class Evento {
 
     @OneToMany
     private List<Prenotazione> prenotazioni;
+
+    public void decrementaPostiDisponibili() {
+        if (nPostiDisponibili > 0) {
+            nPostiDisponibili --;
+        } else {
+            throw new RuntimeException("Questo evento è sold out!");
+        }
+    }
   }

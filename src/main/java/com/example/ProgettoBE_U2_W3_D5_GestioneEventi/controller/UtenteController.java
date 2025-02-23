@@ -4,6 +4,7 @@ import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Utente;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.EventoDTO;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.repository.UtenteDAORepository;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.EventoService;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.PrenotazioneService;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.UtenteService;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.EmailDuplicateException;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.exception.UsernameDuplicateException;
@@ -24,10 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +50,9 @@ public class UtenteController {
 
     @Autowired
     UtenteDAORepository utenteRepo;
+
+    @Autowired
+    PrenotazioneService prenotazioneService;
 
     //creazione/registrazione nuovo utente
     @PostMapping("/new")
@@ -146,6 +147,20 @@ public class UtenteController {
 
         String messaggio = eventoService.saveEvento(eventoDTO);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
+
+    //------metodi user normali----
+
+    @PostMapping("/booking/{eventoId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
+    public ResponseEntity<?> creaPrenotazioneEvento(@PathVariable long eventoId, Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            String messaggio = prenotazioneService.bookingEvento(eventoId, username);
+            return new ResponseEntity<>( messaggio, HttpStatus.ACCEPTED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
