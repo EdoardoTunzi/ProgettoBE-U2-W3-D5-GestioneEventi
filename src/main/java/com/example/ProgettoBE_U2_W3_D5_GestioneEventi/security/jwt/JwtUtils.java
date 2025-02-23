@@ -39,14 +39,14 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Recupera l'username dal JWT
+    // Recupera l'username dal JWT .parseClaimsJwt era sbagliato e mi bloccava la creazione dell'evento.
     public String recuperoUsernameDaToken(String token){
-        return Jwts.parserBuilder().setSigningKey(recuperoChiave()).build().parseClaimsJwt(token).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(recuperoChiave()).build().parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Recupera la scadenza dal JWT
+    // Recupera la scadenza dal JWT - .parseClaimsJwt era sbagliato e mi bloccava la creazione dell'evento.
     public Date recuperoScadenzaDaToken(String token){
-        return Jwts.parserBuilder().setSigningKey(recuperoChiave()).build().parseClaimsJwt(token).getBody().getExpiration();
+        return Jwts.parserBuilder().setSigningKey(recuperoChiave()).build().parseClaimsJws(token).getBody().getExpiration();
     }
 
     // Validazione del TOKEN JWT
