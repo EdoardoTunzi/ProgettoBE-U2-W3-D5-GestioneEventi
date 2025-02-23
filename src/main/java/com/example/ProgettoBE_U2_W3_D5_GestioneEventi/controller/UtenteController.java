@@ -122,6 +122,8 @@ public class UtenteController {
 
     }
 
+    //-------Metodi organizzatore-----
+
     @PostMapping("/org/newEvento")
     @PreAuthorize("hasAnyAuthority('ROLE_ORGANIZZATORE')")
     public ResponseEntity<?> creaEvento (@Validated @RequestBody EventoDTO eventoDTO, BindingResult validazione,Authentication authentication ) {
