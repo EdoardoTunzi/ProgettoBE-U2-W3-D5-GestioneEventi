@@ -1,5 +1,6 @@
 package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class PrenotazioneDTO {
     @NotBlank(message = "L'utente è un campo obbligatorio")
-    private Utente utente;
+    private long utente_Id;
 
     @NotBlank(message = "L'evento è un campo obbligatorio")
     private Evento evento;

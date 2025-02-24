@@ -3,6 +3,7 @@ package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.controller;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Evento;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Utente;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.EventoDTO;
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.PrenotazioneDTO;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.repository.UtenteDAORepository;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.EventoService;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.service.PrenotazioneService;
@@ -15,6 +16,7 @@ import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.response.JwtRespon
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.jwt.JwtUtils;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -184,6 +186,14 @@ public class UtenteController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/booking/getAll")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
+    public ResponseEntity<List<PrenotazioneDTO>> getAllPrenotazioni(Authentication authentication) {
+        String username = authentication.getName();
+        List<PrenotazioneDTO> lista = prenotazioneService.getAllPrenotazioni(username) ;
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
 }
