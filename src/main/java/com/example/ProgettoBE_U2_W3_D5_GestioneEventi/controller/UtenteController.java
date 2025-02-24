@@ -190,10 +190,17 @@ public class UtenteController {
 
     @GetMapping("/booking/getAll")
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public ResponseEntity<List<PrenotazioneDTO>> getAllPrenotazioni(Authentication authentication) {
+    public ResponseEntity<Page<PrenotazioneDTO>> getAllPrenotazioni(Authentication authentication) {
         String username = authentication.getName();
-        List<PrenotazioneDTO> lista = prenotazioneService.getAllPrenotazioni(username) ;
-        return new ResponseEntity<>(lista, HttpStatus.OK);
+        Page<PrenotazioneDTO> page = prenotazioneService.getAllPrenotazioni(username) ;
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    @DeleteMapping("/booking/delete/{idPrenotazione}")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
+    public ResponseEntity<?> deletePrenotazione( @PathVariable long idPrenotazione, Authentication authentication) {
+        String username = authentication.getName();
+        String messaggio = prenotazioneService.deletePrenotazione(idPrenotazione, username);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
 }

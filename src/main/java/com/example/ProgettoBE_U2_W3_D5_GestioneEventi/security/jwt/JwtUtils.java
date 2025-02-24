@@ -7,10 +7,13 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 // Funzionlità Utilities del TOKEN
@@ -30,9 +33,14 @@ public class JwtUtils {
         // Recupero il dettaglio principal (username)
         UserDetailsImpl utentePrincipal = (UserDetailsImpl) autenticazione.getPrincipal();//il metodo getDetails era sbagliato!
 
+        /*List<String> ruoli = utentePrincipal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());*/
+
         // Creazione del JWT
         return Jwts.builder()
                 .setSubject(utentePrincipal.getUsername())
+                /*.claim("ruolo", ruoli)*/
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+jwtExpirations))
                 .signWith(recuperoChiave(), SignatureAlgorithm.HS256)

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -49,7 +50,7 @@ public class PrenotazioneService {
         return "Prenotazione effettuata con successo!";
     }
 
-    public List<PrenotazioneDTO> getAllPrenotazioni(String username) {
+    public Page<PrenotazioneDTO> getAllPrenotazioni(String username) {
         Utente utente = utenteRepo.findByUsername(username).orElseThrow(()-> new RuntimeException("Utente non trovato."));
         List<Prenotazione> listaPrenotazioni = utente.getListaPrenotazioni();
 
@@ -60,9 +61,30 @@ public class PrenotazioneService {
             listPrenDTO.add(dto);
         }
 
+        Page<PrenotazioneDTO> listaPage = new PageImpl<>(listPrenDTO);
+        return listaPage;
 
-        return listPrenDTO;
+    }
 
+    public String deletePrenotazione(long idPrenotazione, String username) {
+        Optional<Prenotazione> prenTrovata = prenotazioniRepo.findById(idPrenotazione);
+        Utente utenteTrovato = utenteRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("Utente non trovato"));
+
+        if(prenTrovata.isPresent()) {
+            Prenotazione prenotazione = prenTrovata.get();
+
+
+            if (prenotazione.getUtente().equals(utenteTrovato)) {
+                prenotazioniRepo.deleteById(prenotazione.getId());
+                return "Prenotazione eliminata con successo!";
+            } else {
+                throw new RuntimeException("Non puoi cancellare prenotazioni di altri utenti.");
+
+            }
+
+        } else {
+            throw new RuntimeException("Errore: nessuna prenotazione trovata con questo id");
+        }
     }
 
     public PrenotazioneDTO entity_dto(Prenotazione prenotazione) {
