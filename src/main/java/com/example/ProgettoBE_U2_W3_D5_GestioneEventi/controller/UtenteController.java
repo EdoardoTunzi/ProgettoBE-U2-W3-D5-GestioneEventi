@@ -58,7 +58,7 @@ public class UtenteController {
     PrenotazioneService prenotazioneService;
 
     //creazione/registrazione nuovo utente
-    @PostMapping("/new")
+    @PostMapping("/public/new")
     public ResponseEntity<String> signUp(@Validated @RequestBody RegistrazioneRequest nuovoUtente, BindingResult validazione){
 
         try {
@@ -79,7 +79,7 @@ public class UtenteController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginRequest loginDto, BindingResult validazione){
 
         // VALIDAZIONE
@@ -196,7 +196,7 @@ public class UtenteController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @DeleteMapping("/booking/delete/{idPrenotazione}")
+    @DeleteMapping("/booking/{idPrenotazione}")
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public ResponseEntity<?> deletePrenotazione( @PathVariable long idPrenotazione, Authentication authentication) {
         String username = authentication.getName();

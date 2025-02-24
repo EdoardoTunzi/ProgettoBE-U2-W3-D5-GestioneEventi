@@ -33,17 +33,12 @@ public class JwtUtils {
         // Recupero il dettaglio principal (username)
         UserDetailsImpl utentePrincipal = (UserDetailsImpl) autenticazione.getPrincipal();//il metodo getDetails era sbagliato!
 
-        /*List<String> ruoli = utentePrincipal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());*/
-
         // Creazione del JWT
         return Jwts.builder()
                 .setSubject(utentePrincipal.getUsername())
-                /*.claim("ruolo", ruoli)*/
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+jwtExpirations))
-                .signWith(recuperoChiave(), SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, recuperoChiave())
                 .compact();
     }
 
@@ -52,7 +47,7 @@ public class JwtUtils {
         return Jwts.parserBuilder().setSigningKey(recuperoChiave()).build().parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Recupera la scadenza dal JWT - .parseClaimsJwt era sbagliato e mi bloccava la creazione dell'evento.
+    // Recupera la scadenza dal JWT -
     public Date recuperoScadenzaDaToken(String token){
         return Jwts.parserBuilder().setSigningKey(recuperoChiave()).build().parseClaimsJws(token).getBody().getExpiration();
     }

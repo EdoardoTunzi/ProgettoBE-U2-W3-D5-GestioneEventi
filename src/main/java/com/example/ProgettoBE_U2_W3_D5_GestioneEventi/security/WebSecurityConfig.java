@@ -56,7 +56,7 @@ public class WebSecurityConfig{
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(gestoreNOAuthorization))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/utente/**").permitAll() // Endpoint pubblici (registrazione/login)
+                        .requestMatchers("/utente/public/**").permitAll() // Endpoint pubblici (registrazione/login)
                         .requestMatchers("/utente/org/**").hasAuthority("ROLE_ORGANIZZATORE") // Solo organizzatori possono gestire eventi
                         .requestMatchers("/utente/booking/**").hasAuthority("ROLE_USER")// Solo utenti possono prenotare
                         .anyRequest().authenticated());

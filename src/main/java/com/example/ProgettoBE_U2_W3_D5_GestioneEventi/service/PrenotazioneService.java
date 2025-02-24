@@ -67,23 +67,18 @@ public class PrenotazioneService {
     }
 
     public String deletePrenotazione(long idPrenotazione, String username) {
-        Optional<Prenotazione> prenTrovata = prenotazioniRepo.findById(idPrenotazione);
+        Prenotazione prenTrovata = prenotazioniRepo.findById(idPrenotazione).orElseThrow(() -> new RuntimeException("Prenotazione non trovato"));
         Utente utenteTrovato = utenteRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("Utente non trovato"));
 
-        if(prenTrovata.isPresent()) {
-            Prenotazione prenotazione = prenTrovata.get();
 
+        Prenotazione prenotazione = prenTrovata;
 
-            if (prenotazione.getUtente().equals(utenteTrovato)) {
-                prenotazioniRepo.deleteById(prenotazione.getId());
-                return "Prenotazione eliminata con successo!";
-            } else {
-                throw new RuntimeException("Non puoi cancellare prenotazioni di altri utenti.");
-
-            }
-
+        if (prenotazione.getUtente().equals(utenteTrovato)) {
+            prenotazioniRepo.deleteById(prenotazione.getId());
+            return "Prenotazione eliminata con successo!";
         } else {
-            throw new RuntimeException("Errore: nessuna prenotazione trovata con questo id");
+            throw new RuntimeException("Non puoi cancellare prenotazioni di altri utenti.");
+
         }
     }
 
