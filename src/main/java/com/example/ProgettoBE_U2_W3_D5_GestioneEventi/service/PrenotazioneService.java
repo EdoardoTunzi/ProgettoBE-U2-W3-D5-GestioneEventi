@@ -38,6 +38,7 @@ public class PrenotazioneService {
         booking.setEvento(evento);
         prenotazioniRepo.save(booking);
         utente.getListaPrenotazioni().add(booking);
+        evento.getPrenotazioni().add(booking);
 
         return "Prenotazione effettuata con successo!";
     }
