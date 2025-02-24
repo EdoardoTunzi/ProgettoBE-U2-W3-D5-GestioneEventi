@@ -166,6 +166,12 @@ public class UtenteController {
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 
+    @DeleteMapping("/org/deleteEvento/{idEvento}/{idOrganizzatore}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ORGANIZZATORE')")
+    public ResponseEntity<?> deleteEvento( @PathVariable long idEvento, @PathVariable long idOrganizzatore) {
+        String messaggio = eventoService.deleteEvento(idEvento, idOrganizzatore);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
     //------metodi user normali----
 
     @PostMapping("/booking/{eventoId}")

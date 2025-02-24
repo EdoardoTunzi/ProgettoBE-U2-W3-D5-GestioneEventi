@@ -51,6 +51,25 @@ public class EventoService {
         }
         return "Evento aggiornato correttamente";
     }
+//aggiunto controllo sull'organizzatore che prova a cancellare l'evento. solo lo stesso organizzatore che ha creato l'evento può cancellarlo.
+    public String deleteEvento(long eventoId, long organizzatoreId) {
+        Optional<Evento> eventoTrovato = eventoRepo.findById(eventoId);
+        Optional<Utente> organizzTrovato = utenteRepo.findById(organizzatoreId);
+        if (eventoTrovato.isPresent() && organizzTrovato.isPresent()) {
+            Evento evento = eventoTrovato.get();
+            Utente org = organizzTrovato.get();
+
+            if(evento.getCreatoreEvento().equals(org)) {
+                eventoRepo.delete(evento);
+                return "Evento rimosso con successo !";
+            }else {
+                throw new RuntimeException("Errore nella cancellazione dell'evento. Non hai i permessi per cancellare eventi che non hai creato tu");
+            }
+
+        } else {
+            throw new RuntimeException("Errore nella cancellazione dell'evento. Nessun evento trovato con questo id");
+        }
+    }
 
     //----travaso DTO----
 
