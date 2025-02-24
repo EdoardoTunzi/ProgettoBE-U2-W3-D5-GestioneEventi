@@ -1,5 +1,6 @@
 package com.example.ProgettoBE_U2_W3_D5_GestioneEventi.controller;
 
+import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Evento;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.model.Utente;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.payload.EventoDTO;
 import com.example.ProgettoBE_U2_W3_D5_GestioneEventi.repository.UtenteDAORepository;
@@ -146,6 +147,22 @@ public class UtenteController {
 
 
         String messaggio = eventoService.saveEvento(eventoDTO);
+        return new ResponseEntity<>(messaggio, HttpStatus.OK);
+    }
+
+    @PutMapping("/org/updateEvento/{idEvento}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ORGANIZZATORE')")
+    public ResponseEntity<?> updateEvento (@Validated @RequestBody EventoDTO eventoDTO, @PathVariable long idEvento, BindingResult validazione) {
+        if(validazione.hasErrors()){
+            StringBuilder errori = new StringBuilder("Problemi nella validazione dati :\n");
+
+            for(ObjectError errore : validazione.getAllErrors()){
+                errori.append(errore.getDefaultMessage()).append("\n");
+            }
+            return new ResponseEntity<>(errori.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        String messaggio = eventoService.updateEvento(eventoDTO, idEvento);
         return new ResponseEntity<>(messaggio, HttpStatus.OK);
     }
 

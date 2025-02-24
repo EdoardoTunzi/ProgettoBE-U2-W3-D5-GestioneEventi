@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class EventoService {
@@ -30,6 +32,24 @@ public class EventoService {
         eventoRepo.save(eventoDaSalvare);
 
         return "Nuovo evento salvato con successo!";
+    }
+
+
+    public String updateEvento(EventoDTO eventoDTO, long idEvento) {
+        Optional<Evento> eventoTrovato = eventoRepo.findById(idEvento);
+
+        if( eventoTrovato.isPresent()) {
+            Evento evento = eventoTrovato.get();
+            evento.setTitolo(eventoDTO.getTitolo());
+            evento.setDescrizione(eventoDTO.getDescrizione());
+            evento.setData(eventoDTO.getData());
+            evento.setLuogo(eventoDTO.getLuogo());
+            evento.setNPostiDisponibili(eventoDTO.getNPostiDisponibili());
+            eventoRepo.save(evento);
+        } else {
+            throw new RuntimeException("Errore nella modifica dell'evento. Evento non trovato nel DB.");
+        }
+        return "Evento aggiornato correttamente";
     }
 
     //----travaso DTO----
